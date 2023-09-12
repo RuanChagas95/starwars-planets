@@ -4,53 +4,69 @@ import { PlanetType } from '../../utils/types';
 
 export default function Table() {
   const [planets, setPlanets] = useState<PlanetType[]>([]);
+  const [filtredPlanets, setFiltredPlanets] = useState<PlanetType[]>([]);
+  const [searchStr, setSearchStr] = useState('');
   useEffect(() => {
     (async () => {
       const currPlanets = await fetchPlanets();
       if (currPlanets) {
         setPlanets(currPlanets.results);
+        setFiltredPlanets(currPlanets.results);
       }
     })();
   }, []);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchStr(e.target.value);
+    const filtred = planets.filter((planet) => planet.name.includes(e.target.value));
+    setFiltredPlanets(filtred);
+  };
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Rotation Period</th>
-          <th>Orbital Period</th>
-          <th>Diameter</th>
-          <th>Climate</th>
-          <th>Gravity</th>
-          <th>Terrain</th>
-          <th>Surface Water</th>
-          <th>Population</th>
-          <th>Films</th>
-          <th>Created</th>
-          <th>Edtided</th>
-          <th>URL</th>
-        </tr>
-      </thead>
-      <tbody>
-
-        {planets.map((planet) => (
-          <tr key={ planet.name }>
-            <td>{planet.name}</td>
-            <td>{planet.rotation_period}</td>
-            <td>{planet.orbital_period}</td>
-            <td>{planet.diameter}</td>
-            <td>{planet.climate}</td>
-            <td>{planet.gravity}</td>
-            <td>{planet.terrain}</td>
-            <td>{planet.surface_water}</td>
-            <td>{planet.population}</td>
-            <td>{planet.films}</td>
-            <td>{planet.created}</td>
-            <td>{planet.edited}</td>
-            <td>{planet.url}</td>
+    <>
+      <input
+        data-testid="name-filter"
+        value={ searchStr }
+        type="text"
+        onChange={ handleChange }
+      />
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Rotation Period</th>
+            <th>Orbital Period</th>
+            <th>Diameter</th>
+            <th>Climate</th>
+            <th>Gravity</th>
+            <th>Terrain</th>
+            <th>Surface Water</th>
+            <th>Population</th>
+            <th>Films</th>
+            <th>Created</th>
+            <th>Edtided</th>
+            <th>URL</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+
+          {filtredPlanets.map((planet) => (
+            <tr key={ planet.name }>
+              <td>{planet.name}</td>
+              <td>{planet.rotation_period}</td>
+              <td>{planet.orbital_period}</td>
+              <td>{planet.diameter}</td>
+              <td>{planet.climate}</td>
+              <td>{planet.gravity}</td>
+              <td>{planet.terrain}</td>
+              <td>{planet.surface_water}</td>
+              <td>{planet.population}</td>
+              <td>{planet.films}</td>
+              <td>{planet.created}</td>
+              <td>{planet.edited}</td>
+              <td>{planet.url}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 }

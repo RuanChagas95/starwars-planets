@@ -1,3 +1,6 @@
+import { ReactNode } from 'react';
+import { AutoUpdateType } from '../context/autoUpdate';
+
 export type PlanetType = {
   'name': 'Tatooine',
   'rotation_period': '23',
@@ -36,4 +39,29 @@ export type PlanetsType = {
   'next': string
   'previous': null,
   'results': PlanetType[]
+};
+
+export type SearchType = {
+  setState(state: React.SetStateAction<SearchType>):
+  React.Dispatch<React.SetStateAction<SearchType>>;
+  planets: PlanetType[];
+  name: string;
+  columns: {
+    column: string;
+    operator: string;
+    number: string;
+  }
+  filtredPlanets: PlanetType[];
+  filterByText(name : string, toUpdate?: boolean): PlanetType[];
+  filterByColumn(): void;
+  update: AutoUpdateType<SearchType>;
+};
+
+export type ContextStateType<T> = [
+  T,
+  React.Dispatch<React.SetStateAction<T>>,
+];
+
+export type ContextProviderProps = {
+  children: ReactNode;
 };

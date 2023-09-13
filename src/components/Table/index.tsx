@@ -1,72 +1,60 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { fetchPlanets } from '../../services/api';
-import { PlanetType } from '../../utils/types';
+import { SearchType } from '../../utils/types';
+import { searchContext } from '../../context/search/SearchContext';
 
 export default function Table() {
-  const [planets, setPlanets] = useState<PlanetType[]>([]);
-  const [filtredPlanets, setFiltredPlanets] = useState<PlanetType[]>([]);
-  const [searchStr, setSearchStr] = useState('');
-  useEffect(() => {
-    (async () => {
-      const currPlanets = await fetchPlanets();
-      if (currPlanets) {
-        setPlanets(currPlanets.results);
-        setFiltredPlanets(currPlanets.results);
-      }
-    })();
-  }, []);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchStr(e.target.value);
-    const filtred = planets.filter((planet) => planet.name.includes(e.target.value));
-    setFiltredPlanets(filtred);
-  };
-  return (
-    <>
-      <input
-        data-testid="name-filter"
-        value={ searchStr }
-        type="text"
-        onChange={ handleChange }
-      />
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Rotation Period</th>
-            <th>Orbital Period</th>
-            <th>Diameter</th>
-            <th>Climate</th>
-            <th>Gravity</th>
-            <th>Terrain</th>
-            <th>Surface Water</th>
-            <th>Population</th>
-            <th>Films</th>
-            <th>Created</th>
-            <th>Edtided</th>
-            <th>URL</th>
-          </tr>
-        </thead>
-        <tbody>
+  const [search, setSearch] = useContext(searchContext);
 
-          {filtredPlanets.map((planet) => (
-            <tr key={ planet.name }>
-              <td>{planet.name}</td>
-              <td>{planet.rotation_period}</td>
-              <td>{planet.orbital_period}</td>
-              <td>{planet.diameter}</td>
-              <td>{planet.climate}</td>
-              <td>{planet.gravity}</td>
-              <td>{planet.terrain}</td>
-              <td>{planet.surface_water}</td>
-              <td>{planet.population}</td>
-              <td>{planet.films}</td>
-              <td>{planet.created}</td>
-              <td>{planet.edited}</td>
-              <td>{planet.url}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </>
+  const fetchCallBack = useCallback(async () => {
+    const currPlanets = await fetchPlanets();
+    if (currPlanets) {
+      setSearch((prev):SearchType => ({ ...prev, planets: currPlanets.results }));
+    }
+  }, [setSearch]);
+  useEffect(() => {
+    fetchCallBack();
+  }, [fetchCallBack]);
+
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Rotation Period</th>
+          <th>Orbital Period</th>
+          <th>Diameter</th>
+          <th>Climate</th>
+          <th>Gravity</th>
+          <th>Terrain</th>
+          <th>Surface Water</th>
+          <th>Population</th>
+          <th>Films</th>
+          <th>Created</th>
+          <th>Edtided</th>
+          <th>URL</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {search.filtredPlanets.map((planet) => (
+          <tr key={ planet.name }>
+            <td>{planet.name}</td>
+            <td>{planet.rotation_period}</td>
+            <td>{planet.orbital_period}</td>
+            <td>{planet.diameter}</td>
+            <td>{planet.climate}</td>
+            <td>{planet.gravity}</td>
+            <td>{planet.terrain}</td>
+            <td>{planet.surface_water}</td>
+            <td>{planet.population}</td>
+            <td>{planet.films}</td>
+            <td>{planet.created}</td>
+            <td>{planet.edited}</td>
+            <td>{planet.url}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }

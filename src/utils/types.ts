@@ -41,19 +41,23 @@ export type PlanetsType = {
   'results': PlanetType[]
 };
 
+export type FilterType = {
+  column: string;
+  operator: string;
+  number: string;
+};
+
 export type SearchType = {
   setState(state: React.SetStateAction<SearchType>):
   React.Dispatch<React.SetStateAction<SearchType>>;
   planets: PlanetType[];
   name: string;
-  columns: {
-    column: string;
-    operator: string;
-    number: string;
-  }
+  columns: FilterType
+  filters: FilterType[]
   filtredPlanets: PlanetType[];
   filterByText(name : string, toUpdate?: boolean): PlanetType[];
-  filterByColumn(): void;
+  filterByColumn(filters: FilterType[]): void;
+  addFilter(): void;
   update: AutoUpdateType<SearchType>;
 };
 

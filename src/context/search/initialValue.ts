@@ -1,7 +1,9 @@
-import { PlanetType } from '../../utils/types';
+import { ColumnType, PlanetType } from '../../utils/types';
 
 export default {
   planets: [] as PlanetType[],
   name: '',
   columns: { column: 'population', operator: 'maior que', number: '0' },
-  filtredPlanets: [] as PlanetType[] };
+  filtredPlanets: [] as PlanetType[],
+  filters: [] as ColumnType[],
+};

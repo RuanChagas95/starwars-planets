@@ -1,6 +1,6 @@
-import { SearchType, PlanetType } from '../../utils/types';
+import { SearchType, PlanetType, FilterType } from '../../utils/types';
 
-function filterByText(this: SearchType, name: string, toUpdate = true) {
+function filterByText(this: SearchType, name : string, toUpdate = true) {
   this.name = name;
   const filtredPlanets = this.planets.filter((planet) => {
     if (name === '') return true;
@@ -13,30 +13,36 @@ function filterByText(this: SearchType, name: string, toUpdate = true) {
   return filtredPlanets;
 }
 
-function filterByColumn(this: SearchType) {
-  const { column, operator, number } = this.columns;
-  const filtred = this.filterByText(this.name, false);
-  console.log(filtred);
-  const columnFiltred = filtred.filter((planet) => {
-    const planetValue = Number(planet[column as keyof PlanetType]);
-    console.log(operator);
+function addFilter(this:SearchType) {
+  this.filterByColumn([...this.filters, this.columns]);
+  this.filters.push({ ...this.columns });
+}
 
-    switch (operator) {
-      case 'maior que':
-        return planetValue > (Number(number) || -1);
+function filterByColumn(this: SearchType, filters: FilterType[]) {
+  const tableFiltredText = this.filterByText(this.name, false);
+  const aplyedFilter = filters.reduce((acc, filter) => {
+    const { column, operator, number } = filter;
 
-      case 'menor que':
-        return planetValue < (Number(number) || -1);
-      case 'igual a':
-        return planetValue === (Number(number));
-      default: return false;
-    }
-  });
-  console.log(columnFiltred);
+    const newFilterApplied = acc.filter((planet) => {
+      const planetValue = Number(planet[column as keyof PlanetType]);
 
-  this.filtredPlanets = columnFiltred;
+      switch (operator) {
+        case 'maior que':
+          return planetValue > (Number(number) || -1);
 
+        case 'menor que':
+          return planetValue < (Number(number) || -1);
+        case 'igual a':
+          return planetValue === (Number(number));
+        default: return false;
+      }
+    }, tableFiltredText);
+
+    return newFilterApplied;
+  }, tableFiltredText);
+
+  this.filtredPlanets = aplyedFilter;
   this.update();
 }
 
-export default { filterByText, filterByColumn };
+export default { filterByText, filterByColumn, addFilter };

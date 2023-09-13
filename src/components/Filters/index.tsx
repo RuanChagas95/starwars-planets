@@ -65,7 +65,7 @@ export default function Filters() {
       <button
         type="button"
         data-testid="button-filter"
-        onClick={ () => search.filterByColumn() }
+        onClick={ () => search.addFilter() }
       >
         Filter
       </button>

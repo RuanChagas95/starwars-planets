@@ -1,14 +1,8 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { searchContext } from '../../context/search/SearchContext';
-import { SearchType } from '../../utils/types';
 
 export default function Filters() {
   const [search, setSearch] = useContext(searchContext);
-  useEffect(() => {
-    console.log('api');
-
-    setSearch((prev): SearchType => ({ ...prev, filtredPlanets: search.planets }));
-  }, [setSearch, search.planets]);
 
   const inputTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     search.filterByText(e.target.value);
@@ -36,11 +30,13 @@ export default function Filters() {
           data-testid="column-filter"
           onChange={ columnChange }
         >
-          <option value="population">population</option>
-          <option value="orbital_period">orbital_period</option>
-          <option value="diameter">diameter</option>
-          <option value="rotation_period">rotation_period</option>
-          <option value="surface_water">surface_water</option>
+          {(['population', 'orbital_period', 'diameter', 'rotation_period',
+            'surface_water'].filter((option) => !search.filters
+            .some((filter) => filter.column === option))).map((option) => {
+            return (
+              <option key={ option } value={ option }>{option}</option>
+            );
+          })}
         </select>
       </label>
 

@@ -9,7 +9,9 @@ export default function Table() {
   const fetchCallBack = useCallback(async () => {
     const currPlanets = await fetchPlanets();
     if (currPlanets) {
-      setSearch((prev):SearchType => ({ ...prev, planets: currPlanets.results }));
+      setSearch((prev):SearchType => ({ ...prev,
+        planets: currPlanets.results,
+        filtredPlanets: currPlanets.results }));
     }
   }, [setSearch]);
   useEffect(() => {

@@ -57,7 +57,9 @@ export type SearchType = {
   filtredPlanets: PlanetType[];
   filterByText(name : string, toUpdate?: boolean): PlanetType[];
   filterByColumn(filters: FilterType[]): void;
-  addFilter(): void;
+  addFilter(column: string, operator: string, number: string): void;
+  deleteFilter(filterColumn: string): void;
+  removeAllFilters(): void;
   update: AutoUpdateType<SearchType>;
 };
 

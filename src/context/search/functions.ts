@@ -13,9 +13,12 @@ function filterByText(this: SearchType, name : string, toUpdate = true) {
   return filtredPlanets;
 }
 
-function addFilter(this:SearchType) {
-  this.filterByColumn([...this.filters, this.columns]);
-  this.filters.push({ ...this.columns });
+function addFilter(this:SearchType, column: string, operator: string, number: string) {
+  const filter = {
+    column, operator, number,
+  };
+  this.filterByColumn([...this.filters, filter]);
+  this.filters.push(filter);
 }
 
 function filterByColumn(this: SearchType, filters: FilterType[]) {
@@ -45,4 +48,15 @@ function filterByColumn(this: SearchType, filters: FilterType[]) {
   this.update();
 }
 
-export default { filterByText, filterByColumn, addFilter };
+function deleteFilter(this: SearchType, column: string) {
+  this.filters = this.filters.filter((filter) => filter.column !== column);
+  this.filterByColumn(this.filters);
+}
+
+function removeAllFilters(this: SearchType) {
+  this.filters = [];
+  this.filterByText(this.name);
+}
+
+export default {
+  filterByText, filterByColumn, addFilter, deleteFilter, removeAllFilters };
